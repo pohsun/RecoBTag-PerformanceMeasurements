@@ -467,8 +467,7 @@ process.source = cms.Source("PoolSource",
 
 if options.miniAOD:
     process.source.fileNames = [
-        #'/store/relval/CMSSW_8_0_0/RelValTTbar_13/MINIAODSIM/PU25ns_80X_mcRun2_asymptotic_v4-v1/10000/A65CD249-BFDA-E511-813A-0025905A6066.root'
-        '/store/mc/RunIISpring16MiniAODv2/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/90000/02A0E7CE-1B35-E611-8612-0CC47A7FC4C8.root'
+        '/store/relval/CMSSW_8_0_0/RelValTTbar_13/MINIAODSIM/PU25ns_80X_mcRun2_asymptotic_v4-v1/10000/A65CD249-BFDA-E511-813A-0025905A6066.root'
     ]
     if options.runOnData:
         process.source.fileNames = [
@@ -480,7 +479,8 @@ if options.miniAOD:
         ]
 else:
     process.source.fileNames = [
-        '/store/relval/CMSSW_8_0_0/RelValProdTTbar_13/AODSIM/80X_mcRun2_asymptotic_v4-v1/10000/DE81ABBF-1DDA-E511-8AF8-0026189438B5.root'
+        #'/store/relval/CMSSW_8_0_0/RelValProdTTbar_13/AODSIM/80X_mcRun2_asymptotic_v4-v1/10000/DE81ABBF-1DDA-E511-8AF8-0026189438B5.root'
+        '/store/mc/RunIISpring16MiniAODv2/ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v2/20000/EEB0DBD6-FC41-E611-8ACF-001E6743E2DE.root'
     ]
     if options.runOnData:
         process.source.fileNames = [
@@ -1019,6 +1019,9 @@ if options.useTTbarFilter:
     process.load("RecoBTag.PerformanceMeasurements.TTbarSelectionFilter_cfi")
     process.load("RecoBTag.PerformanceMeasurements.TTbarSelectionProducer_cfi")
 
+    if options.isReHLT and not options.runOnData:
+        process.ttbarselectionproducer.triggerColl =  cms.InputTag("TriggerResults","","HLT2")
+
     #electron id
     from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
         
@@ -1186,16 +1189,24 @@ if options.useLegacyTaggers:
 #   process.btagana.produceAllTrackTree  = True
 #   process.btagana.producePtRelTemplate = False
 #------------------
+
 process.btagana.tracksColl            = cms.InputTag(trackSource) 
-process.btagana.useSelectedTracks     = True  ## False if you want to run on all tracks : for commissioning studies
-process.btagana.useTrackHistory       = False ## Can only be used with GEN-SIM-RECODEBUG files
-process.btagana.fillsvTagInfo         = False ## True if you want to store information relative to the svTagInfos, set to False if produceJetTrackTree is set to False
-process.btagana.produceJetTrackTree   = False ## True if you want to keep info for tracks associated to jets : for commissioning studies
-process.btagana.produceAllTrackTree   = False ## True if you want to keep info for all tracks : for commissioning studies
+#process.btagana.useSelectedTracks     = True  ## False if you want to run on all tracks : for commissioning studies
+#process.btagana.useTrackHistory       = False ## Can only be used with GEN-SIM-RECODEBUG files
+#process.btagana.fillsvTagInfo         = False ## True if you want to store information relative to the svTagInfos, set to False if produceJetTrackTree is set to False
+#process.btagana.produceJetTrackTree   = False ## True if you want to keep info for tracks associated to jets : for commissioning studies
+#process.btagana.produceAllTrackTree   = False ## True if you want to keep info for all tracks : for commissioning studies
+process.btagana.useSelectedTracks   = False
+process.btagana.useTrackHistory     = False
+process.btagana.fillsvTagInfo       = True
+process.btagana.produceJetTrackTree = True
+process.btagana.produceAllTrackTree = True
 process.btagana.producePtRelTemplate  = options.producePtRelTemplate  ## True for performance studies
 #------------------
-process.btagana.storeTagVariables     = False  ## True if you want to keep TagInfo TaggingVariables
-process.btagana.storeCSVTagVariables  = True   ## True if you want to keep CSV TaggingVariables
+#process.btagana.storeTagVariables     = False  ## True if you want to keep TagInfo TaggingVariables
+#process.btagana.storeCSVTagVariables  = True   ## True if you want to keep CSV TaggingVariables
+process.btagana.storeTagVariables = True
+process.btagana.storeCSVTagVariables = True
 process.btagana.primaryVertexColl     = cms.InputTag(pvSource)
 process.btagana.Jets                  = cms.InputTag(patJetSource)
 process.btagana.muonCollectionName    = cms.InputTag(muSource)
